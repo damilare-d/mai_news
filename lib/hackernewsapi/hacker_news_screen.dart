@@ -37,11 +37,23 @@ class _HackerNewsPageState extends State<HackerNewsPage> {
     }
   }
 
+  Future<String> fetchStoryBody(int storyId) async {
+    final response = await http.get(
+        Uri.parse('https://hacker-news.firebaseio.com/v0/item/$storyId.json'));
+    if (response.statusCode == 200) {
+      final story = jsonDecode(response.body);
+      return story['text'] ?? '';
+      // return the story body or an empty string if it's null
+    } else {
+      throw Exception('Failed to load story');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hacker News'),
+        title: const Text('Hacker News'),
       ),
       body: ListView.builder(
         itemCount: _stories.length,
